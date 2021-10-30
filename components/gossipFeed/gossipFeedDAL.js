@@ -14,7 +14,7 @@ const queryUserFollowingList = async (userID) =>
 const cacheUserFollowingList = async (userID, userFollowingList) =>
   new Promise((resolve, reject) => {
     redisClient.SETEX(
-      userID,
+      `${userID}_followingList`,
       DEFAULT_EXPIRATION,
       userFollowingList,
       (error, value) => {
@@ -27,7 +27,7 @@ const cacheUserFollowingList = async (userID, userFollowingList) =>
 //* checking whether the user following list is cached
 const isUserFollowingListCached = async (userID) =>
   new Promise((resolve, reject) => {
-    redisClient.GET(userID, (error, value) => {
+    redisClient.GET(`${userID}_followingList`, (error, value) => {
       if (error) reject(error);
       resolve(value);
     });
