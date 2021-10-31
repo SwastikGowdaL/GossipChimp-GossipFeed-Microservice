@@ -1,4 +1,5 @@
 const gossipFeedDAL = require('./gossipFeedDAL');
+const helpers = require('./helpers');
 
 //* queries the user following list
 const queryUserFollowingList = async (userID) => {
@@ -19,7 +20,7 @@ const cacheUserFollowingList = async (userID, userFollowingList) => {
   try {
     return await gossipFeedDAL.cacheUserFollowingList(
       userID,
-      JSON.stringify(userFollowingList)
+      JSON.stringify(helpers.convertUserFollowingListToArray(userFollowingList))
     );
   } catch (err) {
     console.log(err);
@@ -57,8 +58,9 @@ const retrieveUserFollowingList = async (userID) => {
 
       if (userFollowingListCached !== 'OK') {
         console.log('error while caching');
-        return userFollowingList;
       }
+
+      return helpers.convertUserFollowingListToArray(userFollowingList);
     }
 
     return userFollowingList;

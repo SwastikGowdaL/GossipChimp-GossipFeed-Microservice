@@ -1,4 +1,4 @@
-const convertToArray = async (array) => {
+const convertToArray = (array) => {
   const convertedArray = [];
   array.forEach((element) => {
     convertedArray.push(element.author_id);

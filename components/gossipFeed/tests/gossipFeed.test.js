@@ -28,6 +28,12 @@ const expectedUserFollowingList = {
   ],
 };
 
+const cachedUserFollowingList = {
+  high_priority_list: ['author_id2'],
+  medium_priority_list: ['author_id3'],
+  low_priority_list: ['author_id4'],
+};
+
 afterAll(() => {
   mongoose.connection.close();
 });
@@ -50,7 +56,7 @@ test('caching User Following List', async () => {
 test('checking whether the data is cached or not', async () => {
   const isUserFollowingListCached =
     await gossipFeedService.isUserFollowingListCached('author_id6');
-  expect(isUserFollowingListCached).toMatchObject(expectedUserFollowingList);
+  expect(isUserFollowingListCached).toMatchObject(cachedUserFollowingList);
 });
 
 test('checking whether the non-cached user following list returns null', async () => {
@@ -62,5 +68,5 @@ test('checking whether the non-cached user following list returns null', async (
 test('retrieving user Following List', async () => {
   const retrievedUserFollowingList =
     await gossipFeedService.retrieveUserFollowingList('author_id6');
-  expect(retrievedUserFollowingList).toMatchObject(expectedUserFollowingList);
+  expect(retrievedUserFollowingList).toMatchObject(cachedUserFollowingList);
 });
