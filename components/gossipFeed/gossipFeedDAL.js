@@ -33,8 +33,18 @@ const isUserFollowingListCached = async (userID) =>
     });
   });
 
+//* query cached posts
+const queryCachedPosts = async (userID) =>
+  new Promise((resolve, reject) => {
+    redisClient.LRANGE(userID, 0, -1, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
   isUserFollowingListCached,
+  queryCachedPosts,
 };

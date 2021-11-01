@@ -70,9 +70,29 @@ const retrieveUserFollowingList = async (userID) => {
   }
 };
 
+const readyPosts = async (userID, numberOfPosts) => {
+  const userFollowingList = await retrieveUserFollowingList(userID);
+};
+
+const retrievePosts = async (userID, numberOfPosts, userFollowingList) => {};
+
+//* query cached posts
+const queryCachedPosts = async (arrayOfUsersID) => {
+  const posts = [];
+  let cachedPosts;
+  for (const userID of arrayOfUsersID) {
+    cachedPosts = await gossipFeedDAL.queryCachedPosts(userID);
+    if (cachedPosts !== null) {
+      posts.push(...cachedPosts);
+    }
+  }
+  return posts;
+};
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
   isUserFollowingListCached,
   retrieveUserFollowingList,
+  queryCachedPosts,
 };

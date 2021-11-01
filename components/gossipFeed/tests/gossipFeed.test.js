@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const app = require('../../../app');
 const gossipFeedService = require('../gossipFeedService');
+const gossipFeedDAL = require('../gossipFeedDAL');
+const redisClient = require('../helpers/redisClient');
 
 let userFollowingList;
 const expectedUserFollowingList = {
@@ -36,6 +38,7 @@ const cachedUserFollowingList = {
 
 afterAll(() => {
   mongoose.connection.close();
+  redisClient.quit();
 });
 
 test('retrieving following lists of a specific user', async () => {
@@ -69,4 +72,16 @@ test('retrieving user Following List', async () => {
   const retrievedUserFollowingList =
     await gossipFeedService.retrieveUserFollowingList('author_id6');
   expect(retrievedUserFollowingList).toMatchObject(cachedUserFollowingList);
+});
+
+test('query cached posts', async () => {
+  const arrayOfUsersID = ['author_id10', 'author_id2'];
+  const retrievedCachedPosts = await new Promise((resolve, reject) => {
+    redisClient.LRANGE('author_id2', 0, -1, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+  const cachedPosts = await gossipFeedService.queryCachedPosts(arrayOfUsersID);
+  expect(cachedPosts).toEqual(retrievedCachedPosts);
 });

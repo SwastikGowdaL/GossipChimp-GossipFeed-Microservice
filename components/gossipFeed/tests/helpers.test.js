@@ -1,4 +1,5 @@
 const helpers = require('../helpers');
+const removeElementsFromArray = require('../helpers/removeElementsFromArray');
 
 const userFollowingList = {
   high_priority_list: [
@@ -33,4 +34,9 @@ test('testing convert to array function', async () => {
     medium_priority_list: ['author_id3'],
     low_priority_list: ['author_id4'],
   });
+});
+
+test('testing removing array helper function', async () => {
+  const elements = removeElementsFromArray(['1', '2', '3', '4'], 2);
+  expect(elements).toEqual(['1', '2']);
 });
