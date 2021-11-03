@@ -40,3 +40,19 @@ test('testing removing array helper function', async () => {
   const elements = removeElementsFromArray(['1', '2', '3', '4'], 2);
   expect(elements).toEqual(['1', '2']);
 });
+
+test('testing checkIfArrayIncludesPostID function for true', async () => {
+  const hasLiked = await helpers.checkIfArrayIncludesPostID(
+    '61821ec515a10999e48ac935',
+    ['61821ec515a10999e48ac935', '61821ec515a10999e48ac978']
+  );
+  expect(hasLiked).toBe(true);
+});
+
+test('testing checkIfArrayIncludesPostID function for false', async () => {
+  const hasLiked = await helpers.checkIfArrayIncludesPostID(
+    '61821ec515a10999e48ac935',
+    ['61821ec515a10999e48ac978']
+  );
+  expect(hasLiked).toBe(false);
+});

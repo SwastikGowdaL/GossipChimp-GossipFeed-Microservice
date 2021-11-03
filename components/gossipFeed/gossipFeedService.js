@@ -70,12 +70,6 @@ const retrieveUserFollowingList = async (userID) => {
   }
 };
 
-const readyPosts = async (userID, numberOfPosts) => {
-  const userFollowingList = await retrieveUserFollowingList(userID);
-};
-
-const retrievePosts = async (userID, numberOfPosts, userFollowingList) => {};
-
 //* query cached posts
 const queryCachedPosts = async (arrayOfUsersID) => {
   const posts = [];
@@ -89,10 +83,81 @@ const queryCachedPosts = async (arrayOfUsersID) => {
   return posts;
 };
 
+const queryUserDetails = async (userID) => {
+  try {
+    return await gossipFeedDAL.queryUserDetails(userID);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+const hasLiked = async (postID, arrayOfLikedPosts) =>
+  helpers.checkIfArrayIncludesPostID(postID, arrayOfLikedPosts);
+
+const hasCommented = async (postID, arrayOfCommentedPosts) =>
+  helpers.checkIfArrayIncludesPostID(postID, arrayOfCommentedPosts);
+
+const hasRegossiped = async (postID, arrayOfRegossipedPosts) =>
+  helpers.checkIfArrayIncludesPostID(postID, arrayOfRegossipedPosts);
+
+const hasBookmarked = async (postID, arrayOfBookmarkedPosts) =>
+  helpers.checkIfArrayIncludesPostID(postID, arrayOfBookmarkedPosts);
+
+const hasReported = async (postID, arrayOfReportedPosts) =>
+  helpers.checkIfArrayIncludesPostID(postID, arrayOfReportedPosts);
+
+const isPostUnInteracted = async (userID, postID) => {
+  const userDetails = await queryUserDetails(userID);
+
+  if (await hasLiked(postID, userDetails.liked_gossips)) return false;
+  if (await hasCommented(postID, userDetails.commented_gossips)) return false;
+  if (await hasRegossiped(postID, userDetails.regossiped_gossips)) return false;
+  if (await hasBookmarked(postID, userDetails.bookmarked_gossips)) return false;
+  if (await hasReported(postID, userDetails.reported_gossips)) return false;
+  return true;
+};
+
+const retrieveUnInteractedPosts = async (userID, posts, numberOfPosts) => {
+  const readyPosts = [];
+  for (const post of posts) {
+    const postUnInteracted = await isPostUnInteracted(userID, post);
+    if (postUnInteracted) {
+      readyPosts.push(post);
+      if (readyPosts.length === numberOfPosts) return readyPosts;
+    }
+  }
+  return readyPosts;
+};
+
+const retrievePosts = async (userID, numberOfPosts) => {
+  const userFollowingList = await retrieveUserFollowingList(userID);
+  const cachedHighPriorityPosts = await queryCachedPosts(
+    userFollowingList.high_priority_list
+  );
+  const unInteractedPosts = await retrieveUnInteractedPosts(
+    userID,
+    cachedHighPriorityPosts,
+    numberOfPosts
+  );
+  if (unInteractedPosts.length === 10) {
+    return unInteractedPosts;
+  }
+  return unInteractedPosts;
+};
+
+// const readyPosts = async (userID, numberOfPosts) => {
+//   const posts = await retrievePosts(userID, numberOfPosts);
+// };
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
   isUserFollowingListCached,
   retrieveUserFollowingList,
   queryCachedPosts,
+  queryUserDetails,
+  isPostUnInteracted,
+  retrieveUnInteractedPosts,
+  retrievePosts,
 };

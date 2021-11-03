@@ -1,4 +1,5 @@
 const FollowingList = require('../../models/followingList');
+const Users = require('../../models/users');
 
 const redisClient = require('./helpers/redisClient');
 
@@ -42,9 +43,13 @@ const queryCachedPosts = async (userID) =>
     });
   });
 
+//* query user from DB
+const queryUserDetails = async (userID) => Users.findById(userID);
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
   isUserFollowingListCached,
   queryCachedPosts,
+  queryUserDetails,
 };
