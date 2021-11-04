@@ -1,5 +1,6 @@
 const FollowingList = require('../../models/followingList');
 const Users = require('../../models/users');
+const Gossip = require('../../models/gossip');
 
 const redisClient = require('./helpers/redisClient');
 
@@ -46,10 +47,28 @@ const queryCachedPosts = async (userID) =>
 //* query user from DB
 const queryUserDetails = async (userID) => Users.findById(userID);
 
+//* query post one week's post
+const queryPastOneWeekPosts = async (
+  authorID,
+  yesterdayDate,
+  pastOneWeekDate
+) =>
+  Gossip.find(
+    {
+      author_id: authorID,
+      published_date: {
+        $lte: new Date(yesterdayDate),
+        $gte: new Date(pastOneWeekDate),
+      },
+    },
+    '_id'
+  );
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
   isUserFollowingListCached,
   queryCachedPosts,
   queryUserDetails,
+  queryPastOneWeekPosts,
 };

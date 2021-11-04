@@ -159,15 +159,57 @@ test('retrieving UnInteracted Posts', async () => {
   ]);
 });
 
-test('retrieve Posts', async () => {
-  const posts = await gossipFeedService.retrievePosts(
+test('retrieve cached Posts', async () => {
+  const posts = await gossipFeedService.retrieveCachedPosts(
     '617fc7e5e8bee9ff94617ab1',
-    4
+    11
   );
   expect(posts).toEqual([
     '61826d52a723c22f51bfd333',
     '61826d45a723c22f51bfd331',
     '61826cfda723c22f51bfd32d',
     '61821eb815a10999e48ac933',
+    '618371cd8909afdcf226c52f',
+    '618371c08909afdcf226c52d',
+    '618371bd8909afdcf226c52b',
+    '618371b98909afdcf226c529',
+    '61826d23a723c22f51bfd32f',
+    '618371ed8909afdcf226c533',
+    '618371e88909afdcf226c531',
+  ]);
+});
+
+test('retrieve past one week posts', async () => {
+  const posts = await gossipFeedService.retrievePastOneWeekPosts(
+    '617fc7e5e8bee9ff94617ab1',
+    3
+  );
+  expect(posts).toEqual([
+    '61821eb815a10999e48ac933',
+    '617fa207f6627d2599288c44',
+    '617fa207f6627d2599288c42',
+  ]);
+});
+
+test('retrieve posts', async () => {
+  const posts = await gossipFeedService.retrievePosts(
+    '617fc7e5e8bee9ff94617ab1',
+    14
+  );
+  expect(posts).toEqual([
+    '61826d52a723c22f51bfd333',
+    '61826d45a723c22f51bfd331',
+    '61826cfda723c22f51bfd32d',
+    '61821eb815a10999e48ac933',
+    '618371cd8909afdcf226c52f',
+    '618371c08909afdcf226c52d',
+    '618371bd8909afdcf226c52b',
+    '618371b98909afdcf226c529',
+    '61826d23a723c22f51bfd32f',
+    '618371ed8909afdcf226c533',
+    '618371e88909afdcf226c531',
+    '61821eb815a10999e48ac933',
+    '617fa207f6627d2599288c44',
+    '617fa207f6627d2599288c42',
   ]);
 });
