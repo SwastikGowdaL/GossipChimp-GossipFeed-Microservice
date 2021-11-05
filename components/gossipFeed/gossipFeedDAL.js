@@ -71,6 +71,25 @@ const queryRandomPost = async (userID) =>
     { $sample: { size: 1 } },
   ]);
 
+//* checks whether the post is cached or not
+const isPostCached = async (postID) =>
+  new Promise((resolve, reject) => {
+    redisClient.EXISTS(postID, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
+const queryPost = async (postID) => Gossip.findById(postID);
+
+const cachePost = async (postID, post) =>
+  new Promise((resolve, reject) => {
+    redisClient.SETEX(postID, DEFAULT_EXPIRATION, post, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
@@ -79,4 +98,7 @@ module.exports = {
   queryUserDetails,
   queryPastOneWeekPosts,
   queryRandomPost,
+  isPostCached,
+  queryPost,
+  cachePost,
 };

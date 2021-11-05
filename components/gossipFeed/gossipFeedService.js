@@ -329,11 +329,50 @@ const retrievePosts = async (userID, numberOfPosts) => {
   // TODO: create random users random posts accessing function and refactor code to handle cases like -
   // TODO: 1. handle if high_priority_list and low_priority_list is empty
   // TODO: 2. handle function returning null from database or empty arrays etc..,
+  // TODO: 3. solve hashtags problem
 };
 
-// const readyPosts = async (userID, numberOfPosts) => {
-//   const posts = await retrievePosts(userID, numberOfPosts);
-// };
+//* checking whether the post is cached or not
+const isPostCached = async (postID) => {
+  try {
+    const postCached = await gossipFeedDAL.isPostCached(postID);
+    if (postCached) return true;
+    return false;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+//* caching the post
+const cachePost = async (postID) => {
+  try {
+    const post = await gossipFeedDAL.queryPost(postID);
+    await gossipFeedDAL.cachePost(postID, JSON.stringify(post));
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+//* communicating with the cachePost service to cache posts if not cached
+const cachePostsForFuture = async (posts) => {
+  for (const postID of posts) {
+    const postCached = await isPostCached(postID);
+    if (!postCached) await cachePost(postID);
+  }
+};
+
+//* ready posts for future
+const readyPostsForFuture = async (userID, numberOfPosts) => {
+  try {
+    const postsID = await retrievePosts(userID, numberOfPosts);
+    await cachePostsForFuture(postsID);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
 
 module.exports = {
   queryUserFollowingList,
@@ -348,4 +387,5 @@ module.exports = {
   retrieveCachedPosts,
   retrievePastOneWeekPosts,
   retrieveRandomPosts,
+  readyPostsForFuture,
 };
