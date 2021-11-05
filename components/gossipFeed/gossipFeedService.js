@@ -272,6 +272,35 @@ const retrievePastOneWeekPosts = async (userID, numberOfPosts) => {
   return posts;
 };
 
+//* query random posts
+const queryRandomPosts = async (randomAuthors) => {
+  const posts = [];
+  for (const authorID of randomAuthors) {
+    const randomPost = await gossipFeedDAL.queryRandomPost(authorID);
+    posts.push(randomPost[0]._id);
+  }
+  return posts;
+};
+
+//* retrieve random posts
+const retrieveRandomPosts = async (userID, numberOfPosts) => {
+  try {
+    const userFollowingList = await retrieveUserFollowingList(userID);
+    const arrayOfAuthors = [];
+    arrayOfAuthors.push(...userFollowingList.high_priority_list);
+    arrayOfAuthors.push(...userFollowingList.medium_priority_list);
+    arrayOfAuthors.push(...userFollowingList.low_priority_list);
+    const randomAuthors = helpers.randomItemsFromArray(
+      arrayOfAuthors,
+      numberOfPosts
+    );
+    return await queryRandomPosts(randomAuthors);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
 //* retrieve posts
 const retrievePosts = async (userID, numberOfPosts) => {
   let posts = [];
@@ -288,7 +317,16 @@ const retrievePosts = async (userID, numberOfPosts) => {
   posts.push(...pastWeekPosts);
   if (posts.length === numberOfPosts) return posts;
 
-  // TODO: create random posts accessing function and refactor code to handle cases like -
+  //* retrieve random posts
+  const randomPosts = await retrieveRandomPosts(
+    userID,
+    numberOfPosts - posts.length
+  );
+  posts.push(...randomPosts);
+
+  return posts;
+
+  // TODO: create random users random posts accessing function and refactor code to handle cases like -
   // TODO: 1. handle if high_priority_list and low_priority_list is empty
   // TODO: 2. handle function returning null from database or empty arrays etc..,
 };
@@ -309,4 +347,5 @@ module.exports = {
   retrievePosts,
   retrieveCachedPosts,
   retrievePastOneWeekPosts,
+  retrieveRandomPosts,
 };

@@ -64,6 +64,13 @@ const queryPastOneWeekPosts = async (
     '_id'
   );
 
+//* query random post from database
+const queryRandomPost = async (userID) =>
+  Gossip.aggregate([
+    { $match: { author_id: userID } },
+    { $sample: { size: 1 } },
+  ]);
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
@@ -71,4 +78,5 @@ module.exports = {
   queryCachedPosts,
   queryUserDetails,
   queryPastOneWeekPosts,
+  queryRandomPost,
 };

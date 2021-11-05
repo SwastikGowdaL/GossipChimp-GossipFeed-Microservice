@@ -86,7 +86,9 @@ test('caching User Following List', async () => {
 
 test('checking whether the data is cached or not', async () => {
   const isUserFollowingListCached =
-    await gossipFeedService.isUserFollowingListCached('author_id6');
+    await gossipFeedService.isUserFollowingListCached(
+      '617fc7e5e8bee9ff94617ab1'
+    );
   expect(isUserFollowingListCached).toMatchObject(cachedUserFollowingList);
 });
 
@@ -98,7 +100,9 @@ test('checking whether the non-cached user following list returns null', async (
 
 test('retrieving user Following List', async () => {
   const retrievedUserFollowingList =
-    await gossipFeedService.retrieveUserFollowingList('author_id6');
+    await gossipFeedService.retrieveUserFollowingList(
+      '617fc7e5e8bee9ff94617ab1'
+    );
   expect(retrievedUserFollowingList).toMatchObject(cachedUserFollowingList);
 });
 
@@ -186,8 +190,8 @@ test('retrieve past one week posts', async () => {
   );
   expect(posts).toEqual([
     '61821eb815a10999e48ac933',
-    '617fa207f6627d2599288c44',
-    '617fa207f6627d2599288c42',
+    '61826cfda723c22f51bfd32d',
+    '61826d45a723c22f51bfd331',
   ]);
 });
 
@@ -209,7 +213,7 @@ test('retrieve posts', async () => {
     '618371ed8909afdcf226c533',
     '618371e88909afdcf226c531',
     '61821eb815a10999e48ac933',
-    '617fa207f6627d2599288c44',
-    '617fa207f6627d2599288c42',
+    '61826cfda723c22f51bfd32d',
+    '61826d45a723c22f51bfd331',
   ]);
 });

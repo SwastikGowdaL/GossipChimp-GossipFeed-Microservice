@@ -23,3 +23,18 @@ async function testing() {
     console.log(err);
   }
 }
+
+// test('retrieve Random Posts', async () => {
+//   const randomPosts = await gossipFeedService.retrieveRandomPosts(
+//     '617fc7e5e8bee9ff94617ab1',
+//     5
+//   );
+//   console.log(randomPosts);
+//   expect(randomPosts).toEqual([]);
+// });
+
+// test('random item from database', async () => {
+//   const randomItem = await gossipFeedDAL.queryRandomPost('author_id2');
+//   console.log(randomItem);
+//   expect(randomItem).toMatchObject({});
+// });
