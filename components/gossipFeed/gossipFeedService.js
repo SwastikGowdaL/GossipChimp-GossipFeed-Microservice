@@ -326,7 +326,6 @@ const retrievePosts = async (userID, numberOfPosts) => {
 
   return posts;
 
-  // TODO: create random users random posts accessing function and refactor code to handle cases like -
   // TODO: 1. handle if high_priority_list and low_priority_list is empty
   // TODO: 2. handle function returning null from database or empty arrays etc..,
   // TODO: 3. solve hashtags problem
