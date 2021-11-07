@@ -90,6 +90,41 @@ const cachePost = async (postID, post) =>
     });
   });
 
+const queryCachedReadyPosts = async (userID, start, stop) =>
+  new Promise((resolve, reject) => {
+    redisClient.LRANGE(`${userID}_readyPosts`, start, stop, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
+const cacheReadyPostsIdForFuture = async (userID, postsID) =>
+  new Promise((resolve, reject) => {
+    redisClient.LPUSH(`${userID}_readyPosts`, postsID, (error, value) => {
+      if (error) reject(error);
+      redisClient.EXPIRE(`${userID}_readyPosts`, DEFAULT_EXPIRATION);
+      resolve();
+    });
+  });
+
+//* count the number of cached ready gossipsID for specific user
+const countOfReadyCachedPostID = async (userID) =>
+  new Promise((resolve, reject) => {
+    redisClient.LLEN(`${userID}_readyPosts`, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
+//* pop one cached gossipID
+const popOneCachedPostID = async (userID) =>
+  new Promise((resolve, reject) => {
+    redisClient.RPOP(`${userID}_readyPosts`, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
@@ -101,4 +136,8 @@ module.exports = {
   isPostCached,
   queryPost,
   cachePost,
+  queryCachedReadyPosts,
+  cacheReadyPostsIdForFuture,
+  countOfReadyCachedPostID,
+  popOneCachedPostID,
 };

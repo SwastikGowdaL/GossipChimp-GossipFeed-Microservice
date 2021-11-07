@@ -178,8 +178,6 @@ test('retrieve cached Posts', async () => {
     '618371bd8909afdcf226c52b',
     '618371b98909afdcf226c529',
     '61826d23a723c22f51bfd32f',
-    '6186318073f8eb01f898ca8c',
-    '618371ed8909afdcf226c533',
   ]);
 });
 
@@ -210,10 +208,18 @@ test('retrieve posts', async () => {
     '618371bd8909afdcf226c52b',
     '618371b98909afdcf226c529',
     '61826d23a723c22f51bfd32f',
-    '6186318073f8eb01f898ca8c',
-    '618371ed8909afdcf226c533',
-    '618371e88909afdcf226c531',
     '61821eb815a10999e48ac933',
     '61826cfda723c22f51bfd32d',
+    '61826d45a723c22f51bfd331',
+    '61826d52a723c22f51bfd333',
+    '617fa207f6627d2599288c44',
   ]);
+});
+
+test('cache Ready PostsId For Future', async () => {
+  const readyPostsID = await gossipFeedService.cacheReadyPostsIdForFuture(
+    '617fc7e5e8bee9ff94617ab1',
+    2
+  );
+  expect(readyPostsID).toBe();
 });

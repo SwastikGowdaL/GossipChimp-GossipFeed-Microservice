@@ -77,3 +77,32 @@ test('caching post', async () => {
   );
   expect(cachedPost).toBeTruthy();
 });
+
+test('query Cached Ready Posts', async () => {
+  const queryCachedReadyPosts = await gossipFeedDAL.queryCachedReadyPosts(
+    '617fc7e5e8bee9ff94617ab1',
+    0,
+    2
+  );
+  expect(queryCachedReadyPosts).toEqual([
+    '61821eb815a10999e48ac933',
+    '61826cfda723c22f51bfd32d',
+    '61826d45a723c22f51bfd331',
+  ]);
+});
+
+test('cache Ready Posts Id For Future', async () => {
+  const cacheReadyPostsIdForFuture =
+    await gossipFeedDAL.cacheReadyPostsIdForFuture('author_id6', [
+      '12345',
+      '67890',
+    ]);
+  expect(cacheReadyPostsIdForFuture).toBe();
+});
+
+test('count Of Ready Cached PostID', async () => {
+  const countOfReadyCachedPostID = await gossipFeedDAL.countOfReadyCachedPostID(
+    '617fc7e5e8bee9ff94617ab1'
+  );
+  expect(countOfReadyCachedPostID).toBe(7);
+});

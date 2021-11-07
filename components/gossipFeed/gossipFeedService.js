@@ -117,10 +117,17 @@ const hasBookmarked = async (postID, arrayOfBookmarkedPosts) =>
 const hasReported = async (postID, arrayOfReportedPosts) =>
   helpers.checkIfArrayIncludesPostID(postID, arrayOfReportedPosts);
 
+//* checks whether the post is already cached for user
+const hasCached = async (postID, arrayOfCachedPost) =>
+  helpers.checkIfArrayIncludesPostID(postID, arrayOfCachedPost);
+
 //* checks whether the post is un-interacted or not
 const isPostUnInteracted = async (userID, postID) => {
   const userDetails = await queryUserDetails(userID);
 
+  const readyPosts = await gossipFeedDAL.queryCachedReadyPosts(userID, 0, -1);
+
+  if (await hasCached(postID, readyPosts)) return false;
   if (await hasLiked(postID, userDetails.liked_gossips)) return false;
   if (await hasCommented(postID, userDetails.commented_gossips)) return false;
   if (await hasRegossiped(postID, userDetails.regossiped_gossips)) return false;
@@ -367,6 +374,22 @@ const readyPostsForFuture = async (userID, numberOfPosts) => {
   try {
     const postsID = await retrievePosts(userID, numberOfPosts);
     await cachePostsForFuture(postsID);
+    return postsID;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+const cacheReadyPostsIdForFuture = async (userID, numberOfPosts) => {
+  try {
+    const readyPostsID = await readyPostsForFuture(userID, numberOfPosts);
+    await gossipFeedDAL.cacheReadyPostsIdForFuture(userID, readyPostsID);
+    const countOfReadyCachedPostID =
+      await gossipFeedDAL.countOfReadyCachedPostID(userID);
+    if (countOfReadyCachedPostID > 10) {
+      await gossipFeedDAL.popOneCachedPostID(userID);
+    }
   } catch (err) {
     console.log(err);
     throw err;
@@ -387,4 +410,5 @@ module.exports = {
   retrievePastOneWeekPosts,
   retrieveRandomPosts,
   readyPostsForFuture,
+  cacheReadyPostsIdForFuture,
 };
