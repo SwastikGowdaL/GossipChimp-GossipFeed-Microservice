@@ -1,4 +1,5 @@
 const amqp = require('amqplib');
+
 const config = require('../../../config/config');
 
 let connection;
@@ -27,8 +28,7 @@ const startPublisher = async () => {
   await connect();
 };
 
-startPublisher();
-
 module.exports = {
+  startPublisher,
   readyPostsForFuture,
 };

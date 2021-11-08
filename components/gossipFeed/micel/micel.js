@@ -57,3 +57,7 @@ async function testing() {
 //     '618371ed8909afdcf226c533',
 //   ]);
 // });
+
+// test('trim list ', async () => {
+//   await gossipFeedDAL.trimCachedList('testing', 10);
+// });

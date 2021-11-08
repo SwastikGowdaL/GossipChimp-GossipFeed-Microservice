@@ -1,5 +1,6 @@
 const amqp = require('amqplib');
 
+require('../../../db/mongoose');
 const config = require('../../../config/config');
 const gossipFeedService = require('../gossipFeedService');
 
@@ -22,7 +23,7 @@ const readyPostsForFuture = async () => {
       const userID = message.content.toString();
       if (message) {
         try {
-          await gossipFeedService.cacheReadyPostsIdForFuture(userID, 10);
+          await gossipFeedService.cacheReadyPostsIdForFuture(userID, 3);
           channel.ack(message);
         } catch (err) {
           console.log(err);
@@ -37,10 +38,7 @@ const readyPostsForFuture = async () => {
 //* waiting for the connection to be established
 const startPublisher = async () => {
   await connect();
+  await readyPostsForFuture();
 };
 
 startPublisher();
-
-module.exports = {
-  readyPostsForFuture,
-};

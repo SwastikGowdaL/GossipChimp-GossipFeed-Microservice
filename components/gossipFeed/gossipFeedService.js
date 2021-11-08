@@ -388,7 +388,7 @@ const cacheReadyPostsIdForFuture = async (userID, numberOfPosts) => {
     const countOfReadyCachedPostID =
       await gossipFeedDAL.countOfReadyCachedPostID(userID);
     if (countOfReadyCachedPostID > 30) {
-      await gossipFeedDAL.popOneCachedPostID(userID);
+      await gossipFeedDAL.trimCachedList(userID, 29);
     }
   } catch (err) {
     console.log(err);

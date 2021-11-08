@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon index.js",
     "test": "jest",
-    "testCoverage": "jest --coverage"
+    "testCoverage": "jest --coverage",
+    "consumer":"nodemon ./components/gossipFeed/consumers/index.js",
+    "publisher":"nodemon ./components/gossipFeed/publishers/index.js"
   },
   "repository": {
     "type": "git",

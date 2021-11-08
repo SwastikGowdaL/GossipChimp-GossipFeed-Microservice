@@ -125,6 +125,20 @@ const popOneCachedPostID = async (userID) =>
     });
   });
 
+//* trim redis list
+const trimCachedList = async (userID, numberOfItems) =>
+  new Promise((resolve, reject) => {
+    redisClient.LTRIM(
+      `${userID}_readyPosts`,
+      0,
+      numberOfItems,
+      (error, value) => {
+        if (error) reject(error);
+        resolve(value);
+      }
+    );
+  });
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
@@ -140,4 +154,5 @@ module.exports = {
   cacheReadyPostsIdForFuture,
   countOfReadyCachedPostID,
   popOneCachedPostID,
+  trimCachedList,
 };
