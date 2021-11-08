@@ -11,6 +11,9 @@ module.exports = {
   GOSSIP_CHIMP: process.env.GOSSIP_CHIMP,
   GOSSIP_CHIMP_TEST: process.env.GOSSIP_CHIMP_TEST,
 
+  //* amqp cloud instance url
+  amqp: process.env.amqp,
+
   //* auth key for requests
   AUTH_KEY: process.env.AUTH_KEY,
 };
