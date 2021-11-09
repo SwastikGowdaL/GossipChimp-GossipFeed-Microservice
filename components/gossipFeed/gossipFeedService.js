@@ -396,6 +396,19 @@ const cacheReadyPostsIdForFuture = async (userID, numberOfPosts) => {
   }
 };
 
+const retrieveReadyPosts = async (posts) => {
+  const readyPosts = [];
+  for (const postID of posts) {
+    let post = await gossipFeedDAL.retrieveCachedPost(postID);
+    if (!post) {
+      post = await gossipFeedDAL.queryPost(postID);
+      post = JSON.stringify(post);
+    }
+    readyPosts.push(post);
+  }
+  return readyPosts;
+};
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
@@ -411,4 +424,5 @@ module.exports = {
   retrieveRandomPosts,
   readyPostsForFuture,
   cacheReadyPostsIdForFuture,
+  retrieveReadyPosts,
 };

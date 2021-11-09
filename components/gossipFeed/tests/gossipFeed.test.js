@@ -223,3 +223,17 @@ test('cache Ready PostsId For Future', async () => {
   );
   expect(readyPostsID).toBe();
 });
+
+test('retrieve posts from postsID', async () => {
+  const posts = await gossipFeedService.retrieveReadyPosts([
+    '61826d45a723c22f51bfd331',
+    '61826d52a723c22f51bfd333',
+    '617fa207f6627d2599288c30',
+  ]);
+  console.log(posts);
+  expect(posts).toEqual([
+    '{"_id":"61826d45a723c22f51bfd331","gossip":"how do you do friend","likes":[],"shares":[],"regossips":[],"hashtags":["technology","computer"],"bookmarks":[],"author_id":"author_id2","author_name":"author_name","author_pic_id":"author_pic_id","author_authorized":true,"published_date":"2021-11-03T11:06:45.999Z","comments":[],"__v":0}',
+    '{"_id":"61826d52a723c22f51bfd333","gossip":"this is the post with a link ","likes":[],"shares":[],"regossips":[],"hashtags":["technology","computer"],"bookmarks":[],"author_id":"author_id2","author_name":"author_name","author_pic_id":"author_pic_id","author_authorized":true,"link":"https://www.google.com","published_date":"2021-11-03T11:06:58.952Z","comments":[],"__v":0}',
+    '{"_id":"617fa207f6627d2599288c30","gossip":"what the **** mate !","likes":[],"shares":[],"regossips":[],"hashtags":["technology","computer"],"bookmarks":[],"author_id":"author_id10","author_name":"author_name","author_pic_id":"author_pic_id","author_authorized":true,"published_date":"2021-11-01T08:15:03.668Z","comments":[],"__v":0}',
+  ]);
+});

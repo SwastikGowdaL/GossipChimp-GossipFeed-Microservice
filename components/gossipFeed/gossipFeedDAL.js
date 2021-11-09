@@ -139,6 +139,15 @@ const trimCachedList = async (userID, numberOfItems) =>
     );
   });
 
+//* query post from redis
+const retrieveCachedPost = async (postID) =>
+  new Promise((resolve, reject) => {
+    redisClient.GET(postID, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
@@ -155,4 +164,5 @@ module.exports = {
   countOfReadyCachedPostID,
   popOneCachedPostID,
   trimCachedList,
+  retrieveCachedPost,
 };

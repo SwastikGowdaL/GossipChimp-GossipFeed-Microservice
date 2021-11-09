@@ -104,5 +104,28 @@ test('count Of Ready Cached PostID', async () => {
   const countOfReadyCachedPostID = await gossipFeedDAL.countOfReadyCachedPostID(
     '617fc7e5e8bee9ff94617ab1'
   );
-  expect(countOfReadyCachedPostID).toBe(7);
+  expect(countOfReadyCachedPostID).toBe(2);
+});
+
+test('retrieve Cached Post', async () => {
+  let post = await gossipFeedDAL.retrieveCachedPost('61826d52a723c22f51bfd333');
+  console.log(post);
+  post = JSON.parse(post);
+  expect(post).toMatchObject({
+    _id: '61826d52a723c22f51bfd333',
+    gossip: 'this is the post with a link ',
+    likes: [],
+    shares: [],
+    regossips: [],
+    hashtags: ['technology', 'computer'],
+    bookmarks: [],
+    author_id: 'author_id2',
+    author_name: 'author_name',
+    author_pic_id: 'author_pic_id',
+    author_authorized: true,
+    link: 'https://www.google.com',
+    published_date: '2021-11-03T11:06:58.952Z',
+    comments: [],
+    __v: 0,
+  });
 });
