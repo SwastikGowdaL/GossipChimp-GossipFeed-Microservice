@@ -332,10 +332,6 @@ const retrievePosts = async (userID, numberOfPosts) => {
   posts.push(...randomPosts);
 
   return posts;
-
-  // TODO: 1. handle if high_priority_list and low_priority_list is empty
-  // TODO: 2. handle function returning null from database or empty arrays etc..,
-  // TODO: 3. solve hashtags problem
 };
 
 //* checking whether the post is cached or not
@@ -381,6 +377,7 @@ const readyPostsForFuture = async (userID, numberOfPosts) => {
   }
 };
 
+//* caching postsID for future
 const cacheReadyPostsIdForFuture = async (userID, numberOfPosts) => {
   try {
     const readyPostsID = await readyPostsForFuture(userID, numberOfPosts);
@@ -396,6 +393,7 @@ const cacheReadyPostsIdForFuture = async (userID, numberOfPosts) => {
   }
 };
 
+//* retrieves the posts from postsID
 const retrieveReadyPosts = async (posts) => {
   const readyPosts = [];
   for (const postID of posts) {
@@ -407,6 +405,23 @@ const retrieveReadyPosts = async (posts) => {
     readyPosts.push(post);
   }
   return readyPosts;
+};
+
+const queryReadyPosts = async (userID, numberOfPosts) => {
+  try {
+    const isPostsReadyForUser = await gossipFeedDAL.isPostsReadyForUser(userID);
+    if (isPostsReadyForUser) {
+      return await gossipFeedDAL.queryCachedReadyPosts(
+        userID,
+        0,
+        numberOfPosts - 1
+      );
+    }
+    return await retrievePosts(userID, numberOfPosts);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 };
 
 module.exports = {
@@ -425,4 +440,5 @@ module.exports = {
   readyPostsForFuture,
   cacheReadyPostsIdForFuture,
   retrieveReadyPosts,
+  queryReadyPosts,
 };

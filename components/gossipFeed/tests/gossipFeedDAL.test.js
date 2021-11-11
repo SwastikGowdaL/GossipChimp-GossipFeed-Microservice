@@ -82,8 +82,9 @@ test('query Cached Ready Posts', async () => {
   const queryCachedReadyPosts = await gossipFeedDAL.queryCachedReadyPosts(
     '617fc7e5e8bee9ff94617ab1',
     0,
-    2
+    -1
   );
+  console.log(queryCachedReadyPosts);
   expect(queryCachedReadyPosts).toEqual([
     '61821eb815a10999e48ac933',
     '61826cfda723c22f51bfd32d',
@@ -109,7 +110,6 @@ test('count Of Ready Cached PostID', async () => {
 
 test('retrieve Cached Post', async () => {
   let post = await gossipFeedDAL.retrieveCachedPost('61826d52a723c22f51bfd333');
-  console.log(post);
   post = JSON.parse(post);
   expect(post).toMatchObject({
     _id: '61826d52a723c22f51bfd333',

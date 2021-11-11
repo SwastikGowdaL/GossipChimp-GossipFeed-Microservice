@@ -148,6 +148,15 @@ const retrieveCachedPost = async (postID) =>
     });
   });
 
+//* checks whether the post is cached or not
+const isPostsReadyForUser = async (userID) =>
+  new Promise((resolve, reject) => {
+    redisClient.EXISTS(`${userID}_readyPosts`, (error, value) => {
+      if (error) reject(error);
+      resolve(value);
+    });
+  });
+
 module.exports = {
   queryUserFollowingList,
   cacheUserFollowingList,
@@ -165,4 +174,5 @@ module.exports = {
   popOneCachedPostID,
   trimCachedList,
   retrieveCachedPost,
+  isPostsReadyForUser,
 };

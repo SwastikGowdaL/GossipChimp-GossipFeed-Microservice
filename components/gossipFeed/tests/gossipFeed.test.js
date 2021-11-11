@@ -237,3 +237,11 @@ test('retrieve posts from postsID', async () => {
     '{"_id":"617fa207f6627d2599288c30","gossip":"what the **** mate !","likes":[],"shares":[],"regossips":[],"hashtags":["technology","computer"],"bookmarks":[],"author_id":"author_id10","author_name":"author_name","author_pic_id":"author_pic_id","author_authorized":true,"published_date":"2021-11-01T08:15:03.668Z","comments":[],"__v":0}',
   ]);
 });
+
+// test('query ready posts', async () => {
+//   const posts = await gossipFeedService.queryReadyPosts(
+//     '617fc7e5e8bee9ff94617ab1',
+//     5
+//   );
+//   expect(posts).toEqual([]);
+// });
