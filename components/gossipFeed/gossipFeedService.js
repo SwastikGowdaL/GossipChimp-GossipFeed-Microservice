@@ -381,7 +381,9 @@ const readyPostsForFuture = async (userID, numberOfPosts) => {
 const cacheReadyPostsIdForFuture = async (userID, numberOfPosts) => {
   try {
     const readyPostsID = await readyPostsForFuture(userID, numberOfPosts);
-    await gossipFeedDAL.cacheReadyPostsIdForFuture(userID, readyPostsID);
+    for (const postID of readyPostsID) {
+      await gossipFeedDAL.cacheReadyPostsIdForFuture(userID, postID);
+    }
     const countOfReadyCachedPostID =
       await gossipFeedDAL.countOfReadyCachedPostID(userID);
     if (countOfReadyCachedPostID > 30) {
@@ -417,7 +419,23 @@ const queryReadyPosts = async (userID, numberOfPosts) => {
         numberOfPosts - 1
       );
     }
-    return await retrievePosts(userID, numberOfPosts);
+    return await readyPostsForFuture(userID, numberOfPosts);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+const cacheReadyPostsID = async (userID, postsID) => {
+  try {
+    for (const postID of postsID) {
+      await gossipFeedDAL.cacheReadyPostsIdForFuture(userID, postID);
+    }
+    const countOfReadyCachedPostID =
+      await gossipFeedDAL.countOfReadyCachedPostID(userID);
+    if (countOfReadyCachedPostID > 30) {
+      await gossipFeedDAL.trimCachedList(userID, 29);
+    }
   } catch (err) {
     console.log(err);
     throw err;
@@ -441,4 +459,5 @@ module.exports = {
   cacheReadyPostsIdForFuture,
   retrieveReadyPosts,
   queryReadyPosts,
+  cacheReadyPostsID,
 };

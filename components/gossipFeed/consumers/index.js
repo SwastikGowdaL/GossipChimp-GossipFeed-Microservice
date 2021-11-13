@@ -23,7 +23,8 @@ const readyPostsForFuture = async () => {
       const userID = message.content.toString();
       if (message) {
         try {
-          await gossipFeedService.cacheReadyPostsIdForFuture(userID, 5);
+          console.log(`cached data for ${userID}`);
+          await gossipFeedService.cacheReadyPostsIdForFuture(userID, 10);
           channel.ack(message);
         } catch (err) {
           console.log(err);

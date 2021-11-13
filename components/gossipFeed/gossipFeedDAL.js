@@ -29,7 +29,7 @@ const cacheUserFollowingList = async (userID, userFollowingList) =>
 //* checking whether the user following list is cached
 const isUserFollowingListCached = async (userID) =>
   new Promise((resolve, reject) => {
-    redisClient.GET(`${userID}_followingList`, (error, value) => {
+    redisClient.GET(`${String(userID)}_followingList`, (error, value) => {
       if (error) reject(error);
       resolve(value);
     });
@@ -74,8 +74,11 @@ const queryRandomPost = async (userID) =>
 //* checks whether the post is cached or not
 const isPostCached = async (postID) =>
   new Promise((resolve, reject) => {
-    redisClient.EXISTS(postID, (error, value) => {
-      if (error) reject(error);
+    redisClient.EXISTS(String(postID), (error, value) => {
+      if (error) {
+        console.log(postID);
+        console.log('error in isPostCached');
+      }
       resolve(value);
     });
   });
@@ -84,10 +87,15 @@ const queryPost = async (postID) => Gossip.findById(postID);
 
 const cachePost = async (postID, post) =>
   new Promise((resolve, reject) => {
-    redisClient.SETEX(postID, DEFAULT_EXPIRATION, post, (error, value) => {
-      if (error) reject(error);
-      resolve(value);
-    });
+    redisClient.SETEX(
+      String(postID),
+      DEFAULT_EXPIRATION,
+      post,
+      (error, value) => {
+        if (error) reject(error);
+        resolve(value);
+      }
+    );
   });
 
 const queryCachedReadyPosts = async (userID, start, stop) =>
@@ -100,11 +108,15 @@ const queryCachedReadyPosts = async (userID, start, stop) =>
 
 const cacheReadyPostsIdForFuture = async (userID, postsID) =>
   new Promise((resolve, reject) => {
-    redisClient.LPUSH(`${userID}_readyPosts`, postsID, (error, value) => {
-      if (error) reject(error);
-      redisClient.EXPIRE(`${userID}_readyPosts`, DEFAULT_EXPIRATION);
-      resolve();
-    });
+    redisClient.LPUSH(
+      `${userID}_readyPosts`,
+      String(postsID),
+      (error, value) => {
+        if (error) reject(error);
+        redisClient.EXPIRE(`${userID}_readyPosts`, DEFAULT_EXPIRATION);
+        resolve();
+      }
+    );
   });
 
 //* count the number of cached ready gossipsID for specific user
@@ -142,7 +154,7 @@ const trimCachedList = async (userID, numberOfItems) =>
 //* query post from redis
 const retrieveCachedPost = async (postID) =>
   new Promise((resolve, reject) => {
-    redisClient.GET(postID, (error, value) => {
+    redisClient.GET(String(postID), (error, value) => {
       if (error) reject(error);
       resolve(value);
     });
@@ -152,7 +164,9 @@ const retrieveCachedPost = async (postID) =>
 const isPostsReadyForUser = async (userID) =>
   new Promise((resolve, reject) => {
     redisClient.EXISTS(`${userID}_readyPosts`, (error, value) => {
-      if (error) reject(error);
+      if (error) {
+        console.log('error in isPostsReadyForUser');
+      }
       resolve(value);
     });
   });

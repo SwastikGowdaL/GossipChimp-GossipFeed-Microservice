@@ -16,21 +16,32 @@ publishers.startPublisher();
 
 io.on('connection', (socket) => {
   socket.on('requestPost', async (requestInfo) => {
-    const postsID = await gossipFeedService.queryReadyPosts(
-      requestInfo.userID,
-      requestInfo.count
-    );
-    console.log(postsID);
-    const posts = await gossipFeedService.retrieveReadyPosts(postsID);
+    if (requestInfo.count === 10) {
+      const postsID = await gossipFeedService.queryReadyPosts(
+        requestInfo.userID,
+        requestInfo.count
+      );
+      const posts = await gossipFeedService.retrieveReadyPosts(postsID);
+      await publishers.readyPostsForFuture(requestInfo.userID);
+      socket.emit('posts', posts);
+    } else if (requestInfo.count === 30) {
+      const postsID = await gossipFeedService.readyPostsForFuture(
+        requestInfo.userID,
+        30
+      );
+      const posts = await gossipFeedService.retrieveReadyPosts(
+        postsID.slice(0, 20)
+      );
+      await gossipFeedService.cacheReadyPostsID(
+        requestInfo.userID,
+        postsID.slice(20, 30)
+      );
 
-    await publishers.readyPostsForFuture(requestInfo.userID);
-    socket.emit('posts', posts);
+      socket.emit('posts', posts);
+    } else {
+      socket.emit('posts', undefined);
+    }
   });
-
-  // socket.on('cachePostForFuture', async (requestInfo) => {
-  // await publishers.startPublisher();
-  // await publishers.readyPostsForFuture('617fc7e5e8bee9ff94617ab1');
-  // });
 });
 
 if (config.ENV !== 'dev') {
